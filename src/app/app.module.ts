@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, APP_INITIALIZER } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-
+import { HttpModule } from '@angular/http';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
@@ -13,7 +13,9 @@ import { ExpansionPage } from '../pages/expansion/expansion';
 import { PaginatorPage } from '../pages/paginator/paginator';
 import { ProgressBarPage } from '../pages/progress-bar/progress-bar';
 import { ProgressSpinnerPage } from '../pages/progress-spinner/progress-spinner';
-
+import { KeycloakService } from './keycloak.service';
+import { AppConstants } from "./config.service";
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -52,6 +54,10 @@ import {
 } from '@angular/material';
 
 
+export function initConfig(config: AppConstants) {
+    return () => config.loadAPIService();
+  }
+
 @NgModule({
     declarations: [
         MyApp,
@@ -68,6 +74,7 @@ import {
     ],
     imports: [
         BrowserModule,
+        HttpModule,
         IonicModule.forRoot(MyApp),
         BrowserAnimationsModule,
         MatAutocompleteModule,
@@ -100,7 +107,7 @@ import {
         MatTabsModule,
         MatToolbarModule,
         MatTooltipModule,
-        MatStepperModule,
+        MatStepperModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -122,7 +129,11 @@ import {
         {
             provide: ErrorHandler,
             useClass: IonicErrorHandler
-        }
+        },
+        KeycloakService, AppConstants,
+    { provide: APP_INITIALIZER, useFactory: initConfig, deps: [AppConstants], multi: true },
+    InAppBrowser
+
     ]
 })
 export class AppModule {}

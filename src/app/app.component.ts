@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
+import { KeycloakService } from './keycloak.service';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { TabPage } from '../pages/tab/tab';
@@ -24,7 +24,8 @@ export class MyApp {
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
+    private KeycloakService:KeycloakService) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -41,6 +42,10 @@ export class MyApp {
       { title: 'Progress Spinner', component: ProgressSpinnerPage }
     ];
 
+  }
+
+  logout(){
+    this.KeycloakService.logout()
   }
 
   initializeApp() {
